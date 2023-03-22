@@ -22,6 +22,10 @@ class Queue {
   void enqueue(int value) {
     if (_rear == queueList.length - 1) {
       print("Overflow");
+    } else if (_rear == -1 && _front == -1) {
+      _rear = _front = 0;
+      queueList[_rear] = value;
+      print("Item in added: $value");
     } else {
       _rear++;
       queueList[_rear] = value;
@@ -30,11 +34,15 @@ class Queue {
   }
 
   void dequeue() {
-    if (_front == _rear) {
+    if (_front == -1 && _rear == -1) {
       print("Underflow");
-    } else {
-            _front++;
+    } else if (_front == _rear) {
       print('Deleted value: ${queueList[_front]}');
+      _front = _rear = -1;
+    } else {
+     
+      print('Deleted value: ${queueList[_front]}');
+       _front++;
     }
   }
 }

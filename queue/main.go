@@ -28,7 +28,12 @@ type Queue struct {
 func (q *Queue) enqueue(value int) {
 	if (q.rare == len(q.queuList)-1) {
 		fmt.Println("Overflow")
-	} else {
+	}else if(q.rare==-1 && q.front==-1){
+		q.rare=0;
+		q.front=0
+		q.queuList[q.rare] = value
+		fmt.Printf("Item is added %v\n", value)
+	}else {
 		q.rare++
 		q.queuList[q.rare] = value
 		fmt.Printf("Item is added %v\n", value)
@@ -36,10 +41,15 @@ func (q *Queue) enqueue(value int) {
 }
 
 func (q *Queue) dequeue(){
-	if(q.rare==q.front){
+	if(q.rare==-1 &&q.front==-1){
 		fmt.Println("Underflow")
-	}else{
-		q.front++;
+	}else if(q.front==q.rare){
 		fmt.Printf("Item is Deleted: %v\n",q.queuList[q.front])
+		q.rare=-1
+		q.front=-1
+	}else{
+		
+		fmt.Printf("Item is Deleted: %v\n",q.queuList[q.front])
+		q.front++;
 	}
 }
