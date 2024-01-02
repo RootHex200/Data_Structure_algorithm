@@ -6,6 +6,10 @@ class TrieNode {
     children = {};
     isEndOfWord = false;
   }
+  @override
+  String toString() {
+    return "{children: $children,isendofword: $isEndOfWord}";
+  }
 }
 
 class SuffixTrie {
@@ -16,9 +20,7 @@ class SuffixTrie {
   }
 
   void insert(String word) {
-    for (int i = 0; i < word.length; i++) {
-      insertHelper(word.substring(i), root!);
-    }
+    insertHelper(word, root!);
   }
 
   void insertHelper(String word, TrieNode node) {
@@ -31,7 +33,7 @@ class SuffixTrie {
     if (!node.children!.containsKey(firstChar)) {
       node.children![firstChar] = TrieNode();
     }
-
+    // print(root.toString());
     insertHelper(word.substring(1), node.children![firstChar] as TrieNode);
   }
 
@@ -51,6 +53,40 @@ class SuffixTrie {
 
     return searchHelper(word.substring(1), node.children![firstChar] as TrieNode);
   }
+
+  List<String> searchSuggestions(String prefix) {
+    TrieNode? prefixNode = findPrefixNode(prefix, root);
+    print(prefixNode.toString());
+    List<String> suggestions = [];
+    if (prefixNode != null) {
+      collectSuggestions(prefix, prefixNode, suggestions);
+    }
+    return suggestions;
+  }
+
+  TrieNode? findPrefixNode(String prefix, TrieNode? node) {
+    for (int i = 0; i < prefix.length; i++) {
+      String char = prefix[i];
+      if (node!.children!.containsKey(char)) {
+        node = node.children![char] as TrieNode;
+      } else {
+        return null;
+      }
+    }
+    return node;
+  }
+
+  void collectSuggestions(
+      String currentPrefix, TrieNode? node, List<String> suggestions) {
+    if (node!.isEndOfWord!) {
+      suggestions.add(currentPrefix);
+    }
+
+    for (String char in node.children!.keys) {
+      collectSuggestions(
+          currentPrefix + char, node.children![char] as TrieNode, suggestions);
+    }
+  }
 }
 
 void main() {
@@ -61,11 +97,7 @@ void main() {
   trie.insert("banana");
   trie.insert("car");
   trie.insert("carrot");
-  
-  // Searching for words in the trie
-  print(trie.search("apple"));    // Output: true
-  print(trie.search("banana"));   // Output: true
-  print(trie.search("car"));      // Output: true
-  print(trie.search("carrot"));   // Output: true
-  print(trie.search("cat"));      // Output: false
+  print(trie.searchSuggestions("ca"));
+  print(trie.searchSuggestions("ban"));
+
 }
